@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Europe Travel Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        #intro-text {
+            max-width: 800px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        #intro-text h2 {
+            color: #FFD700;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .text-box {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            line-height: 1.6;
+        }
+        .text-box p {
+            margin-bottom: 15px;
+        }
+        #divider {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #divider h2 {
+            color: #FFD700;
+            border-top: 2px solid #FFD700;
+            border-bottom: 2px solid #FFD700;
+            padding: 10px 0;
+            margin: 0;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        #score {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #FFD700;
+        }
+        #progress-bar {
+            flex: 1;
+            height: 10px;
+            background-color: #333;
+            border-radius: 5px;
+            margin: 0 20px;
+            overflow: hidden;
+        }
+        #progress {
+            height: 100%;
+            background-color: #FFD700;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .question-card {
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .option-btn {
+            background-color: #333;
+            color: #fff;
+            border: 2px solid #FFD700;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+        .option-btn:hover {
+            background-color: #FFD700;
+            color: #121212;
+        }
+        .option-btn.correct {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+        .option-btn.wrong {
+            background-color: #f44336;
+            border-color: #f44336;
+        }
+        .option-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .feedback {
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        #final-screen {
+            text-align: center;
+        }
+        #final-screen h2 {
+            color: #FFD700;
+            margin-bottom: 20px;
+        }
+        #restart-btn {
+            background-color: #FFD700;
+            color: #121212;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        #restart-btn:hover {
+            background-color: #FFC107;
+        }
+        @media (max-width: 600px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            #progress-bar {
+                margin: 10px 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="intro-text">
+        <h2>Travel Information</h2>
+        <div class="text-box">
+            <p><strong>Spain:</strong> popular for beaches on the Mediterranean Sea, high mountains for hiking, and cooler Atlantic coasts. Barcelona and Madrid are expensive, but Andalusia and Galicia are cheaper. July and August are the hottest months.</p>
+            <p><strong>Italy:</strong> known for food, fashion, and fast cars. The north has the Alps, cold weather, ski resorts, and rich creamy food. The center has mild weather and simple fresh food. The south is warm, relaxed, with seafood and fruit. Rich in art and history throughout.</p>
+            <p><strong>Germany:</strong> south has forests, hills and mountains. North has flat land. Mild climate with warm summers and cold winters. Backpackers love the reliable bus and train system. Berlin and Munich are must-see cities mixing modern art and history.</p>
+            <p><strong>Czech Republic:</strong> officially renamed Czechia in 2016, located in central Europe. Relaxed lifestyle, good mix of culture and modern life. Prague is the capital, split by the Vltava River into the Old Town (famous clock, lively squares) and the Lesser Town (quiet streets, historical buildings).</p>
+            <p><strong>Poland:</strong> large country with Baltic Sea beaches in the north and Tatra Mountains in the south. Important WWII history. Cheaper than Western Europe but not the cheapest in the East. Mild climate like neighbouring Germany.</p>
+        </div>
+    </div>
+    <div id="divider">
+        <h2>Now Test Yourself</h2>
+    </div>
+    <div id="quiz-container">
+        <header>
+            <div id="score">Score: 0/12</div>
+            <div id="progress-bar"><div id="progress"></div></div>
+        </header>
+        <div id="questions"></div>
+        <div id="final-screen">
+            <h2>Quiz Complete!</h2>
+            <p id="final-message"></p>
+            <button id="restart-btn">Restart Quiz</button>
+        </div>
+    </div>
+    <script>
+        const questionsData = [
+            {
+                question: "What is Spain popular for?",
+                options: ["Beaches on the Mediterranean Sea, high mountains for hiking, and cooler Atlantic coasts", "Deserts and volcanoes", "Lakes and rivers", "Forests and wildlife"],
+                correct: 0
+            },
+            {
+                question: "Which regions in Spain are cheaper than Barcelona and Madrid?",
+                options: ["Costa del Sol and Canary Islands", "Andalusia and Galicia", "Catalonia and Valencia", "Basque Country and Navarra"],
+                correct: 1
+            },
+            {
+                question: "When are the hottest months in Spain?",
+                options: ["December and January", "July and August", "March and April", "September and October"],
+                correct: 1
+            },
+            {
+                question: "What is Italy known for?",
+                options: ["Food, fashion, and fast cars", "Mountains and lakes", "Beaches and deserts", "Forests and wildlife"],
+                correct: 0
+            },
+            {
+                question: "What does the north of Italy have?",
+                options: ["The Alps, cold weather, ski resorts, and rich creamy food", "Warm beaches and seafood", "Flat plains and agriculture", "Deserts and hot climate"],
+                correct: 0
+            },
+            {
+                question: "What is the south of Italy known for?",
+                options: ["Warm, relaxed atmosphere with seafood and fruit", "Cold weather and skiing", "Mountains and hiking", "Urban cities and fashion"],
+                correct: 0
+            },
+            {
+                question: "What is Germany known for in terms of landscape in the south?",
+                options: ["Forests, hills, and mountains", "Beaches and coastlines", "Deserts and plains", "Lakes and rivers"],
+                correct: 0
+            },
+            {
+                question: "What do backpackers love about Germany?",
+                options: ["Reliable bus and train system", "Cheap flights and hotels", "Luxury resorts", "Car rental deals"],
+                correct: 0
+            },
+            {
+                question: "What are must-see cities in Germany?",
+                options: ["Berlin and Munich", "Hamburg and Frankfurt", "Cologne and Dresden", "Stuttgart and Hanover"],
+                correct: 0
+            },
+            {
+                question: "What was the Czech Republic officially renamed to in 2016?",
+                options: ["Czechia", "Bohemia", "Moravia", "Slovakia"],
+                correct: 0
+            },
+            {
+                question: "What river splits Prague into the Old Town and the Lesser Town?",
+                options: ["Vltava River", "Danube River", "Rhine River", "Thames River"],
+                correct: 0
+            },
+            {
+                question: "What does the north of Poland have?",
+                options: ["Baltic Sea beaches", "Alps and mountains", "Deserts and plains", "Lakes and forests"],
+                correct: 0
+            }
+        ];
+
+        let score = 0;
+        let answered = 0;
+        const totalQuestions = questionsData.length;
+        let shuffledQuestions = [];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function initQuiz() {
+            score = 0;
+            answered = 0;
+            shuffledQuestions = [...questionsData];
+            shuffleArray(shuffledQuestions);
+            shuffledQuestions.forEach(q => {
+                shuffleArray(q.options);
+                q.correct = q.options.indexOf(questionsData.find(orig => orig.question === q.question).options[questionsData.find(orig => orig.question === q.question).correct]);
+            });
+            document.getElementById('score').textContent = `Score: ${score}/${totalQuestions}`;
+            document.getElementById('progress').style.width = '0%';
+            document.getElementById('questions').innerHTML = '';
+            document.getElementById('final-screen').style.display = 'none';
+            shuffledQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div class="question-text">${q.question}</div>
+                    <div class="options">
+                        ${q.options.map((opt, i) => `<button class="option-btn" data-index="${i}" data-qindex="${index}">${String.fromCharCode(65 + i)}. ${opt}</button>`).join('')}
+                    </div>
+                    <div class="feedback"></div>
+                `;
+                document.getElementById('questions').appendChild(questionDiv);
+            });
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', handleAnswer);
+            });
+        }
+
+        function handleAnswer(e) {
+            const btn = e.target;
+            const qIndex = parseInt(btn.dataset.qindex);
+            const optIndex = parseInt(btn.dataset.index);
+            const question = shuffledQuestions[qIndex];
+            const feedbackDiv = btn.parentElement.nextElementSibling;
+            const buttons = btn.parentElement.querySelectorAll('.option-btn');
+
+            buttons.forEach(b => b.classList.add('disabled'));
+            if (optIndex === question.correct) {
+                btn.classList.add('correct');
+                feedbackDiv.textContent = 'Correct!';
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                buttons[question.correct].classList.add('correct');
+                feedbackDiv.textContent = 'Wrong! The correct answer is highlighted.';
+            }
+            answered++;
+            document.getElementById('score').textContent = `Score: ${score}/${totalQuestions}`;
+            document.getElementById('progress').style.width = `${(answered / totalQuestions) * 100}%`;
+            if (answered === totalQuestions) {
+                setTimeout(showFinalScreen, 1000);
+            }
+        }
+
+        function showFinalScreen() {
+            const message = score >= 10 ? 'Excellent! You know Europe well!' : score >= 7 ? 'Good job! Keep exploring!' : score >= 4 ? 'Not bad! Learn more about Europe.' : 'Try again! Europe has so much to offer.';
+            document.getElementById('final-message').textContent = `Your score: ${score}/${totalQuestions}. ${message}`;
+            document.getElementById('final-screen').style.display = 'block';
+        }
+
+        document.getElementById('restart-btn').addEventListener('click', initQuiz);
+
+        initQuiz();
+    </script>
+</body>
+</html>
